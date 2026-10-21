@@ -1,0 +1,19 @@
+[project]
+name = "static-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "its-mr-gray", email = "ferrell_gray@proton.me" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.150.0",
+]
+
+[project.scripts]
+static-app = "static_app:main"
+
+[build-system]
+requires = ["uv_build>=0.13.3,<0.14.0"]
+build-backend = "uv_build"
