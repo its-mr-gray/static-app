@@ -1,15 +1,12 @@
-FROM python:3.14-slim
+FROM python:3.14
 
 WORKDIR /app
 
-RUN pip install uv
+COPY ./requirements.txt /app/requirements.txt
 
-COPY pyproject.toml uv.lock ./
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY src/ ./src/
+COPY ./src /app/src
 
-COPY README.md ./
-
-RUN uv sync --frozen
-
-CMD ["uv", "run", "fastapi", "run", "src/static_app/main.py", "--host", "0.0.0.0", "--port", "8000"]
+RUN ls src/static_app/static
+CMD ["fastapi", "run", "src/static_app/main.py", "--port", "80"]
