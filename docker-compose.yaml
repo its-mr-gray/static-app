@@ -1,0 +1,9 @@
+services:
+  app:
+    restart: always
+    build: .
+    ports:
+      - "80:80"
+
+  redis:
+    image: redis:alpine
