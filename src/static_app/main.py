@@ -1,7 +1,9 @@
+from logging import basicConfig, getLogger, INFO
+from redis import Redis
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-import redis
+
 
 # had to change file path from "static" to "src/static_app/static" bc the container didn't like it
 static_file_path = "src/static_app/static"
@@ -13,16 +15,25 @@ app.mount(
     name="static",
 )
 
-r = redis.Redis(
+r = Redis(
     host="redis",
     port=6379,
     decode_responses=True,
 )
 
 
+basicConfig(
+    level=INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+
+logger = getLogger(__name__)
+
+
 @app.get("/api/message")
 async def get_message():
     count = r.incr("click_count")
+    logger.info("Click received, new count=%s", count)
     return {"message": "hello!", "count": count}
 
 
