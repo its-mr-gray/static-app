@@ -1,12 +1,26 @@
-FROM python:3.14
+# build phase
+FROM python:3.14-slim AS builder
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+COPY pyproject.toml uv.lock README.md ./
+COPY src/ ./src/
 
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN uv sync --frozen --no-dev
 
-COPY ./src /app/src
+# final phase
+FROM python:3.14-slim
 
-RUN ls src/static_app/static
-CMD ["fastapi", "run", "src/static_app/main.py", "--port", "80"]
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/src /app/src
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+CMD ["fastapi", "run", "src/static_app/main.py", "--host", "0.0.0.0", "--port", "80"]
