@@ -1,5 +1,5 @@
-from logging import basicConfig, getLogger, INFO
-from redis import Redis
+import logging
+import redis
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,19 +15,19 @@ app.mount(
     name="static",
 )
 
-r = Redis(
+r = redis.Redis(
     host="redis",
     port=6379,
     decode_responses=True,
 )
 
 
-basicConfig(
-    level=INFO,
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @app.get("/api/message")
