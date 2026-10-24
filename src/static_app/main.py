@@ -27,16 +27,35 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(
+    __name__,
+)
 
 
 @app.get("/api/message")
 async def get_message():
-    count = r.incr("click_count")
-    logger.info("Click received, new count=%s", count)
-    return {"message": "hello!", "count": count}
+    count = r.incr(
+        "click_count",
+    )
+    logger.info(
+        "Click received, new count=%s",
+        count,
+    )
+    return {
+        "message": "hello!",
+        "count": count,
+    }
+
+
+@app.get("/api/health")
+def get_health():
+    return {
+        "message": "healthy",
+    }
 
 
 @app.get("/")
 async def root():
-    return FileResponse(static_file_path + "/index.html")
+    return FileResponse(
+        static_file_path + "/index.html",
+    )
